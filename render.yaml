@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: accolade-coins
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: accolade-coins-db
+          property: connectionString
+      - key: VOLUNTEER_PIN
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+databases:
+  - name: accolade-coins-db
+    databaseName: accolade_coins
+    plan: free

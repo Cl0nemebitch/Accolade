@@ -1,0 +1,282 @@
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#" onclick="showPage('landing')">
+    <div class="coin-icon">
+      <svg width="18" height="18" viewBox="0 0 20 20">
+        <circle cx="10" cy="10" r="8" stroke="#b45309" stroke-width="1.5" fill="#fef3c7"></circle>
+        <text x="10" y="14.5" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e" font-family="sans-serif">A</text>
+      </svg>
+    </div>
+    <span style="font-weight:600;font-size:14px;color:var(--text)">A Coins</span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('landing')">Home</button>
+    <button class="nav-link" onclick="showPage('balance')">My Balance</button>
+    <button class="nav-link" onclick="showPage('leaderboard')">Leaderboard</button>
+    <button class="nav-link" onclick="showPage('volunteer')">Volunteer</button>
+    <button class="nav-link" onclick="showPage('admin')">Admin</button>
+  </div>
+  <div class="nav-right">
+    <span class="nav-count" id="nav-count">-- participants</span>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- LANDING PAGE -->
+<div id="page-landing" class="page active">
+  <div class="wrap">
+    <div class="hero">
+      <div style="font-size:20px;margin-bottom:.5rem;font-weight:700">ACC</div>
+      <h1>Accolade 2026</h1>
+      <p class="hero-sub">Earn A Coins. Climb the leaderboard. Redeem at the canteen.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="showPage('balance')">Check my balance</button>
+        <button class="btn btn-secondary" onclick="showPage('leaderboard')">View leaderboard</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem">
+      <h2>How it works</h2>
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-icon">JOIN</div>
+          <div class="how-title">Participate</div>
+          <div class="how-desc">Join competitions, workshops and events throughout Accolade to earn A Coins.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-icon">EARN</div>
+          <div class="how-title">Earn Coins</div>
+          <div class="how-desc">Volunteers award coins for winning, participating, and attending sessions.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-icon">EAT</div>
+          <div class="how-title">Redeem</div>
+          <div class="how-desc">Spend your coins at the college canteen. One redemption per day.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-icon">RANK</div>
+          <div class="how-title">Top the board</div>
+          <div class="how-desc">See where you rank against all participants on the live leaderboard.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Coin Values</h2>
+      <div class="spacer"></div>
+      <table>
+        <thead><tr><th>Activity</th><th>A Coins</th></tr></thead>
+        <tbody>
+          <tr><td>Registration</td><td><span class="badge badge-amber">+5</span></td></tr>
+          <tr><td>Participation in a competition</td><td><span class="badge badge-amber">+10</span></td></tr>
+          <tr><td>Reaching the finals</td><td><span class="badge badge-amber">+20</span></td></tr>
+          <tr><td>3rd place</td><td><span class="badge badge-amber">+40</span></td></tr>
+          <tr><td>2nd place</td><td><span class="badge badge-amber">+60</span></td></tr>
+          <tr><td>1st place / Winner</td><td><span class="badge badge-amber">+100</span></td></tr>
+          <tr><td>Attending a workshop or talk</td><td><span class="badge badge-amber">+5</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- BALANCE PAGE -->
+<div id="page-balance" class="page">
+  <div class="wrap-sm">
+    <h1 style="margin-bottom:.25rem">Check Balance</h1>
+    <p style="margin-bottom:1.5rem">Enter your participant ID or name to see your A Coins balance.</p>
+    <div class="card">
+      <div class="field">
+        <label>Your ID or name</label>
+        <input type="text" id="bal-input" placeholder="e.g. P001 or Rahul Sharma" onkeydown="if(event.key==='Enter')searchBalance()"/>
+      </div>
+      <button class="btn btn-primary" onclick="searchBalance()">Check balance</button>
+      <div id="bal-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LEADERBOARD PAGE -->
+<div id="page-leaderboard" class="page">
+  <div class="wrap">
+    <div class="flex" style="margin-bottom:1.25rem">
+      <div>
+        <h1 style="margin-bottom:.1rem">Leaderboard</h1>
+        <p id="lb-updated" class="muted"></p>
+      </div>
+      <div class="ml-auto" style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="loadLeaderboard()">Refresh</button>
+        <button class="btn btn-secondary btn-sm" onclick="toggleFullscreen()">Fullscreen</button>
+      </div>
+    </div>
+    <div class="card" id="lb-container">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- VOLUNTEER PAGE -->
+<div id="page-volunteer" class="page">
+  <div class="wrap-sm">
+    <h1 style="margin-bottom:.25rem">Volunteer Panel</h1>
+    <p style="margin-bottom:1.5rem">Manage participants and award coins.</p>
+
+    <div id="vol-pin" class="card">
+      <div class="pin-wrap">
+        <p class="muted" style="margin-bottom:1.25rem">Enter volunteer PIN to continue</p>
+        <div class="pin-dots">
+          <div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div>
+          <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
+        </div>
+        <div class="pin-grid">
+          <button class="pin-btn" onclick="vPin('1')">1</button>
+          <button class="pin-btn" onclick="vPin('2')">2</button>
+          <button class="pin-btn" onclick="vPin('3')">3</button>
+          <button class="pin-btn" onclick="vPin('4')">4</button>
+          <button class="pin-btn" onclick="vPin('5')">5</button>
+          <button class="pin-btn" onclick="vPin('6')">6</button>
+          <button class="pin-btn" onclick="vPin('7')">7</button>
+          <button class="pin-btn" onclick="vPin('8')">8</button>
+          <button class="pin-btn" onclick="vPin('9')">9</button>
+          <button class="pin-btn" onclick="vPinClear()" style="font-size:12px">Clear</button>
+          <button class="pin-btn" onclick="vPin('0')">0</button>
+          <button class="pin-btn" onclick="vPinBack()" style="font-size:14px">Back</button>
+        </div>
+        <p id="vol-pin-err" style="color:var(--red);font-size:13px;margin-top:12px;min-height:18px;text-align:center"></p>
+      </div>
+    </div>
+
+    <div id="vol-panel" style="display:none">
+      <div class="vtabs">
+        <button class="vtab on" id="vt-reg" onclick="switchVTab('reg')">Add Participant</button>
+        <button class="vtab" id="vt-award" onclick="switchVTab('award')">Award Coins</button>
+        <button class="vtab" id="vt-canteen" onclick="switchVTab('canteen')">Canteen</button>
+        <button class="vtab" id="vt-menu" onclick="switchVTab('menu')">Edit Menu</button>
+        <button class="vtab" onclick="volLogout()" style="flex:0;padding:8px 14px">Log out</button>
+      </div>
+
+      <div id="vsec-reg" class="vsec on card">
+        <h3>Register new participant</h3>
+        <div class="spacer"></div>
+        <div class="grid2">
+          <div class="field"><label>Participant ID</label><input type="text" id="reg-id" placeholder="e.g. P001"/></div>
+          <div class="field"><label>Starting coins</label><input type="number" id="reg-coins" placeholder="0" min="0"/></div>
+        </div>
+        <div class="field"><label>Full name</label><input type="text" id="reg-name" placeholder="e.g. Rahul Sharma"/></div>
+        <button class="btn btn-primary" onclick="registerParticipant()">Register</button>
+        <div id="reg-msg"></div>
+      </div>
+
+      <div id="vsec-award" class="vsec card">
+        <h3>Award coins to participant</h3>
+        <div class="spacer"></div>
+        <div class="field">
+          <label>Search participant</label>
+          <input type="text" id="aw-search" placeholder="ID or name..." oninput="debounceSearch('aw')"/>
+          <div id="aw-found" style="margin-top:6px;font-size:13px;min-height:18px"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Coins to award</label><input type="number" id="aw-coins" placeholder="e.g. 10" min="1"/></div>
+          <div class="field"><label>Reason (optional)</label><input type="text" id="aw-reason" placeholder="e.g. Won quiz"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="awardCoins()">Award coins</button>
+        <div id="aw-msg"></div>
+      </div>
+
+      <div id="vsec-canteen" class="vsec">
+        <div class="card" style="margin-bottom:1rem">
+          <h3>Process canteen redemption</h3>
+          <div class="spacer"></div>
+          <div class="field">
+            <label>Search participant</label>
+            <input type="text" id="ct-search" placeholder="ID or name..." oninput="debounceSearch('ct')"/>
+            <div id="ct-found" style="margin-top:6px;font-size:13px;min-height:18px"></div>
+          </div>
+          <div class="field">
+            <label>Select menu item</label>
+            <div id="ct-menu-list"></div>
+          </div>
+          <button class="btn btn-primary" onclick="processRedeem()">Redeem</button>
+          <div id="ct-msg"></div>
+        </div>
+
+        <div class="card">
+          <h3>Today redemptions</h3>
+          <div id="ct-history"></div>
+        </div>
+      </div>
+
+      <div id="vsec-menu" class="vsec">
+        <div class="card">
+          <div class="flex" style="margin-bottom:12px">
+            <h3 style="margin:0">Menu items</h3>
+            <button class="btn btn-secondary btn-sm ml-auto" onclick="addMenuItem()">Add item</button>
+          </div>
+          <div id="menu-editor"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div id="page-admin" class="page">
+  <div class="wrap">
+    <h1 style="margin-bottom:.25rem">Admin Analytics</h1>
+    <p style="margin-bottom:1.5rem">Overview and exports for organizers.</p>
+
+    <div id="admin-login" class="card" style="max-width:420px;margin:0 auto">
+      <div class="field">
+        <label>Admin password</label>
+        <input type="password" id="admin-pass" placeholder="Enter password"/>
+      </div>
+      <button class="btn btn-primary" onclick="adminLogin()">Login</button>
+      <div id="admin-login-msg"></div>
+    </div>
+
+    <div id="admin-dash" style="display:none">
+      <div class="card" style="margin-bottom:1rem">
+        <div class="flex" style="margin-bottom:12px">
+          <h3 style="margin:0">Summary</h3>
+          <button class="btn btn-secondary btn-sm ml-auto" onclick="loadAnalytics()">Refresh</button>
+          <button class="btn btn-secondary btn-sm" onclick="exportCSV()">Export CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="adminLogout()">Logout</button>
+        </div>
+        <div class="stat-grid" id="admin-stats"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+        <div class="card">
+          <h3>Coins by reason</h3>
+          <div id="chart-reasons"></div>
+        </div>
+        <div class="card">
+          <h3>Canteen items redeemed</h3>
+          <div id="chart-items"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="flex" style="margin-bottom:12px">
+          <h3 style="margin:0">Top 10 earners</h3>
+        </div>
+        <div id="admin-top"></div>
+      </div>
+
+      <div class="card">
+        <div class="flex" style="margin-bottom:12px">
+          <h3 style="margin:0">All participants</h3>
+          <input type="text" id="admin-search" placeholder="Filter..." oninput="filterAdminTable()" style="margin-left:auto;width:200px"/>
+        </div>
+        <div class="tbl-wrap">
+          <table id="admin-table">
+            <thead><tr><th>ID</th><th>Name</th><th>Coins</th><th>Registered</th></tr></thead>
+            <tbody id="admin-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

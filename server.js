@@ -74,12 +74,18 @@ const allowedOrigins = (process.env.FRONTEND_ORIGINS || '')
   .map(s => s.trim())
   .filter(Boolean)
   .map((entry) => {
-    if (entry === '*') return '*';
+    if (entry === '*') return { any: true };
     try {
       const u = new URL(entry);
-      return u.origin;
+      return { origin: u.origin, host: u.host };
     } catch {
-      return entry.replace(/\/+$/, '');
+      const cleaned = entry.replace(/\/+$/, '');
+      try {
+        const u = new URL('https://' + cleaned);
+        return { origin: 'https://' + cleaned, host: u.host };
+      } catch {
+        return { origin: cleaned, host: cleaned };
+      }
     }
   });
 
@@ -87,9 +93,12 @@ app.use(cors({
   origin: (origin, cb) => {
     if (!origin) return cb(null, true);
     if (!allowedOrigins.length) return cb(null, true);
-    if (allowedOrigins.includes('*')) return cb(null, true);
+    if (allowedOrigins.some(o => o.any)) return cb(null, true);
     const normalized = origin.replace(/\/+$/, '');
-    return allowedOrigins.includes(normalized) ? cb(null, true) : cb(new Error('Not allowed by CORS'));
+    let originHost = '';
+    try { originHost = new URL(normalized).host; } catch {}
+    const allowed = allowedOrigins.some((o) => o.origin === normalized || (originHost && o.host === originHost));
+    return allowed ? cb(null, true) : cb(new Error('Not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT'],
   allowedHeaders: ['Content-Type', 'x-volunteer-pin', 'x-admin-password']

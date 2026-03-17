@@ -26,14 +26,12 @@ jobs:
       - name: Ensure lockfile
         run: |
           if [ ! -f package-lock.json ]; then
-            cat > package-lock.json <<'EOF'
-            {
-              "name": "accolade-coins",
-              "version": "1.0.0",
-              "lockfileVersion": 3,
-              "packages": {}
-            }
-            EOF
+            printf '%s\n' '{' \
+              '  "name": "accolade-coins",' \
+              '  "version": "1.0.0",' \
+              '  "lockfileVersion": 3,' \
+              '  "packages": {}' \
+              '}' > package-lock.json
           fi
       - name: Setup Node
         uses: actions/setup-node@v4

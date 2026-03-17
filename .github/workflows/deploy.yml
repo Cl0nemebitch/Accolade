@@ -5,6 +5,9 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 permissions:
   contents: read
   pages: write
@@ -17,8 +20,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,6 +27,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
+      - name: Generate lockfile
+        run: npm install --package-lock-only --ignore-scripts
       - name: Install
         run: npm install
       - name: Build

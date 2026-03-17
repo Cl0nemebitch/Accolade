@@ -72,13 +72,24 @@ app.disable('x-powered-by');
 const allowedOrigins = (process.env.FRONTEND_ORIGINS || '')
   .split(',')
   .map(s => s.trim())
-  .filter(Boolean);
+  .filter(Boolean)
+  .map((entry) => {
+    if (entry === '*') return '*';
+    try {
+      const u = new URL(entry);
+      return u.origin;
+    } catch {
+      return entry.replace(/\/+$/, '');
+    }
+  });
 
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin) return cb(null, true);
     if (!allowedOrigins.length) return cb(null, true);
-    return allowedOrigins.includes(origin) ? cb(null, true) : cb(new Error('Not allowed by CORS'));
+    if (allowedOrigins.includes('*')) return cb(null, true);
+    const normalized = origin.replace(/\/+$/, '');
+    return allowedOrigins.includes(normalized) ? cb(null, true) : cb(new Error('Not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT'],
   allowedHeaders: ['Content-Type', 'x-volunteer-pin', 'x-admin-password']
